@@ -1,0 +1,37 @@
+{
+    "Settings": {
+        "directory": "files",
+        "main_txt_file": "text.txt",
+        "languages_file": "languages.txt",
+        "universities_file": "universities.txt",
+
+        "min_date": "1951-01-21T18:25:43.511Z",
+        "max_date": "2019-12-23T18:25:43.511Z",
+
+        "min_chapters": 1,
+        "max_chapters": 20,
+
+        "min_sections": 1,
+        "max_sections": 5,
+
+        "min_paragraphs": 1,
+        "max_paragraphs": 10,
+
+        "min_sentences": 1,
+        "max_sentences": 10,
+
+        "min_citations": 5,
+        "max_citations": 15,
+
+        "min_figures": 1,
+        "max_figures": 5,
+
+        "min_keywords": 1,
+        "max_keywords": 3,
+        
+        "text_to_other_prob": 0.9,
+        "non_present_ref_prob": 0.1,
+
+        "has_language_prob": 0.25
+    }
+}
