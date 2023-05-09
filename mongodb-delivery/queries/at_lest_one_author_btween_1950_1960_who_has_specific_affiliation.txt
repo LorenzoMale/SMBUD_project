@@ -1,0 +1,13 @@
+db.papers.find(
+	{"authors": 
+		{
+		$elemMatch: 
+			{
+			"affiliations": "MIT",
+			 $and: [ {"birth_year": {$gt: 1950}},
+				 {"birth_year": {$lt: 1960}}
+				]
+			}
+		}
+	}
+)

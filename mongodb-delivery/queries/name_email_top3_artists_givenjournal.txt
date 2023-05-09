@@ -1,0 +1,23 @@
+db.papers.aggregate([
+	{
+	$match: { 
+		journal: "IWBS Report"
+		}
+	},
+	{
+	$unwind: "$authors"
+	},
+	{
+	$group: { 
+		_id : "$authors.name",
+		count: {$sum : 1},
+		email: {$first: "$authors.email"}
+		}
+	},
+	{
+	$sort: { count : -1}
+	},
+	{
+	$limit : 3
+	}
+])

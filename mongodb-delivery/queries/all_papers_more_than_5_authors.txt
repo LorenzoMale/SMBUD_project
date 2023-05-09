@@ -1,0 +1,10 @@
+db.papers.aggregate([ 
+	{ "$project": 
+		{ "title": 1,
+		  "numAuthors": { $cond:{if:{$isArray:"$authors"}, then: {$size: "$authors"}, else:"1"}}}
+	},
+	{ "$match":{ 
+		"numAuthors": {"$gt": 5}
+		}
+	}
+])

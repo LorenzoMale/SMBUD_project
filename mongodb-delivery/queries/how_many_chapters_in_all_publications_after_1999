@@ -1,0 +1,14 @@
+db.papers.aggregate(
+                    [ 
+                      {
+                        "$match":  {"year":{"$gte":2000}}
+                      },
+                      {
+                        "$unwind": 
+                        {"path":"$documentBody"}
+                      },
+                      {
+                        "$group":  {"_id":"chapter", "count":{"$sum":1}}
+                      }
+                    ]
+                    )

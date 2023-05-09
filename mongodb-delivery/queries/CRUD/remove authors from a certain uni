@@ -1,0 +1,1 @@
+db.papers.updateMany({"authors":{$elemMatch: {affiliations: 'Politecnico di Torino'}}}, {$pull: {authors: {affiliations: 'Politecnico di Torino'}}}) 

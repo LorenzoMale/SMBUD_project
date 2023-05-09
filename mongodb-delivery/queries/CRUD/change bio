@@ -1,0 +1,1 @@
+db.papers.update({"authors.name": 'E. F. Codd'},{"$set": {"authors.$.bio":"hello world!"}}, {"multi": true}) 

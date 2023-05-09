@@ -1,0 +1,8 @@
+db.papers.find(
+                {
+                  "journal":{$exists: true}
+                },
+                {
+                  "title":1, "authors.name":1
+                }
+              )

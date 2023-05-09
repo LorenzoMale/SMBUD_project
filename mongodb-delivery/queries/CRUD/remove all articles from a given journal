@@ -1,0 +1,2 @@
+db.papers.remove({journal: 'meltdownattack.com'})
+db.papers.remove({journal: {$in: ["qui la lista di giornali"]}})

@@ -1,0 +1,8 @@
+db.papers.find(
+                {"$or": 
+                          [{ "title": /Computer/ },{ "title": /Knowledge/ }]
+                },
+                {
+                  "title":1
+                 }
+              )

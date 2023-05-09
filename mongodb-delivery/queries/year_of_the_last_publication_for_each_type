@@ -1,0 +1,10 @@
+db.papers.aggregate(
+  [
+    { $group:
+              {
+                _id:"$type",
+                Mr:{$max:"$year"}
+              }
+    }
+  ]
+)

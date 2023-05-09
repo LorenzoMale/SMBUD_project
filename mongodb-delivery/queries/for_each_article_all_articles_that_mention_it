@@ -1,0 +1,11 @@
+1#for all articles
+db.papers.aggregate([{$unwind:{path:"$citations"}}, {$group: {_id: "$citations","count" : {$sum: 1}, "works": {$push: "$title"}}}])
+vs gigachad:
+2# the same but better
+db.papers.aggregate([{ $project: { "_id": 1, "title": 1, "citations": 1 } }, { $unwind: { path: "$citations" } }, { $group: { _id: "$citations", "count": { $sum: 1 }, "works": { $push: "$title" } } }])
+
+for single article, find all articles who refer to it
+db.papers.find({citations: {$in: [ObjectId("b6a1b4783bb34cbd99369524")]}}, {_id:1, title: 1})
+
+#for each journal, return the article which cites the most other articles
+db.papers.aggregate({$project: {"journal": 1,"num_of_cit": {$size: "$citations"} , "title": 1}}, {$sort: {"num_of_cit": -1}}, {$group: {_id: "$journal", "best": {$first: "$$ROOT" }}}, {$replaceRoot: {newRoot: "$best"}}, {$sort: {"num_of_cit": -1}})

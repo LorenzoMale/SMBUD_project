@@ -1,0 +1,15 @@
+db.papers.aggregate([
+	{
+	$match: { 
+		$expr: { 
+			$gt: [{$cond: {if: {$isArray: "$documentBody"}, then: {$size: "$documentBody"}, else:1}}, 19]
+			}
+		}
+	},
+	{
+	$project: {
+		"title": 1,
+		"documentBody.chapter.title": 1
+		}
+	}
+])

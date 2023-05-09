@@ -1,0 +1,23 @@
+db.papers.aggregate([
+    {$unwind: {path: "$authors"}},
+     {$group: 
+        {_id: 
+            {"author": "$authors",
+            "lang": {$ifNull: ["$language", "unknown"]}},
+        "count": {$sum: 1},
+        "works": {$push: "$title"}
+        }
+    },
+    {$group:
+        {_id:"$_id.author",
+        "work_by_lang": 
+            {$push:
+                {
+                    "lang": "$_id.lang",
+                    "count": "$count",
+                    "works": "$works"
+                }
+            }
+        }
+    }
+])
