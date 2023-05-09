@@ -1,0 +1,62 @@
+CALL apoc.load.xml("file:///db-final.xml") yield value
+UNWIND value._children as p
+WITH p.id as elem_id, p._type as type,
+[item in p._children where item._type = "title"][0]._text as title,
+[item in p._children where item._type = "year"][0]._text as year,
+[item in p._children where item._type = "month"][0]._text as month,
+[item in p._children where item._type = "isbn"][0]._text as isbn_book,
+[item in p._children where item._type = "booktitle"][0]._text as book_title_incollection,
+[item in p._children where item._type = "volume"][0]._text as volume,
+[item in p._children where item._type = "pages"][0]._text as pages,
+
+[item in p._children where item._type = "author"] as authors,
+[item in p._children where item._type = "editor"] as editors,
+[item in p._children where item._type = "journal"] as journals,
+[item in p._children where item._type = "school"] as schools,
+[item in p._children where item._type = "publisher"] as publishers,
+[item in p._children where item._type = "series"] as serieses,
+[item in p._children where item._type = "ee"] as ee,
+[item in p._children where item._type = "crossref"] as crossref
+
+MERGE (e:Publication {id:elem_id})
+SET e.title = title,e.type = type, e.year = year, e.month = month, e.isbn = isbn_book, e.booktitle = book_title_incollection, e.pages = pages, e.volume = volume
+
+WITH *, e, e.type as typ
+CALL apoc.create.addLabels(e, [typ]) YIELD node
+remove e.type
+FOREACH (author in authors|
+    merge (a: Author {name: author._text})
+    SET a.orcid = author.orcid
+    MERGE (e) - [:WRITTEN_BY] -> (a))
+    
+FOREACH (author in editors|
+    MERGE (a: Author {name: author._text})
+    SET a.orcid = author.orcid
+    MERGE (e) - [:EDITED_BY] -> (a))
+    
+FOREACH (publisher in publishers|
+    MERGE(pub: Publisher {name: publisher._text})
+    MERGE (e) - [:PUBLISHED_BY] -> (pub))
+    
+FOREACH (journal in journals|
+    MERGE (j: Journal {name:journal._text})
+    MERGE (e) - [r:PUBLISHED_ON] -> (j)
+    SET r.volume = volume, r.pages= pages)
+    
+FOREACH (school in schools|
+    MERGE (sc: School {name:school._text})
+    MERGE (e) -[:FOR_SCHOOL]-> (sc))
+    
+FOREACH (series in serieses|
+    MERGE (s:Series {name:series._text})
+    MERGE (e) - [r:PART_OF] -> (s)
+    SET r.volume = volume, r.pages = pages)
+    
+FOREACH (link in ee|
+    MERGE(l: link {url:link._text})
+    MERGE (e) - [:LINK] -> (l))
+    
+FOREACH (ref in crossref|
+    MERGE (other:Publication {id:ref._text})
+    MERGE (e) -[r:REFERENCES]-> (other)
+    SET r.volume = volume, r.pages= pages)
